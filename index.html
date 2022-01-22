@@ -57,9 +57,15 @@
                 <!-- input container -->
                 <div id="input-container" class="three columns">
 
-                    <div id="parameter-container">
-                        <h1>Location:</h1>
-                        <input type="text" placeholder="San Diego" id="address-input">
+                    <div id="parameter-container">            
+                        <label for="location">Where are you?</label>
+                        <input id="location" type="text" placeholder="Type Location Here">
+                        <label for="distance">How far will you go?</label>
+                        <select name="distance" id="distancedropdown">
+                          <option value="1mile">1 Mile</option>
+                          <option value="5miles">5 Miles</option>
+                          <option value="10miles">10 Miles</option>
+                        </select>
                     </div>
                     
                     <div id="result-container">
