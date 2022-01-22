@@ -1,3 +1,8 @@
+body{
+    margin: 0;
+}
+
+
 #main-container{
     background-color: blue;
 }
@@ -7,4 +12,26 @@
 
 #map-container{
     background-color: yellow;
+}
+
+.header-style {
+    height: 150px;
+    width: auto;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    margin-bottom: 20px;
+    color: white;
+    text-align: left;
+
+}
+
+.header-text{
+    font-weight: 700;
+    font-size: 65px;
+    margin-left: 15px;
+    padding-top: 30px;
+}
+
+.center-allign{
+    text-align: center;
 }
