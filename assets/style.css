@@ -2,16 +2,17 @@ body{
     margin: 0;
 }
 
-
-#main-container{
-    background-color: blue;
+main{
+    padding: 20px;
 }
+
 #input-container{
-    background-color: red;
+    background-color: rgb(230, 230, 230);
+    padding: 10px;
 }
 
 #map-container{
-    background-color: yellow;
+    padding: 10px;
 }
 
 .header-style {
@@ -22,14 +23,19 @@ body{
     margin-bottom: 20px;
     color: white;
     text-align: left;
-
+    border-bottom: 10px solid grey;
 }
 
 .header-text{
     font-weight: 700;
     font-size: 65px;
-    margin-left: 15px;
+    margin-left: 20px;
     padding-top: 30px;
+}
+
+#container-h1{
+    border-bottom: 2px solid grey;
+    font-weight: 500;
 }
 
 .center-allign{
