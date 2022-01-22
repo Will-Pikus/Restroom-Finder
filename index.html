@@ -45,7 +45,7 @@
 </head>
 
 <body>
-    <header class="header-style d-flex align-items-center justify-content-center">
+    <header class="header-style">
             <h1 class="header-text">Crapshoot</h1>
     </header>    
 
@@ -58,15 +58,31 @@
                 <div id="input-container" class="three columns">
 
                     <div id="parameter-container">
+
                         <h1>Hello</h1>
+
                         <label for="location">Where are you?</label>
                         <input id="location" type="text">
                         <label for="distance">How far will you go?</label>
-                        <select name="distance" id="distancedropdown">
+
+                        <select name="distance" id="distance-dropdown">
                           <option value="1mile">1 Mile</option>
                           <option value="5miles">5 Miles</option>
                           <option value="10miles">10 Miles</option>
                         </select>
+
+                        <select name="public" id="public-dropdown">
+                          <option value="none"></option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+
+                        <select name="gender-neutral" id="gender-dropdown">
+                          <option value="none"></option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+
                     </div>
                     
                     <div id="result-container">
