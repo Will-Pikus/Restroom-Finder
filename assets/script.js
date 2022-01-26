@@ -39,6 +39,11 @@ function initMap() {
           infoWindow.setContent("Location found.");
           infoWindow.open(map);
           map.setCenter(pos);
+
+          const marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+          });
         },
         () => {
           handleLocationError(true, infoWindow, map.getCenter());
@@ -47,6 +52,7 @@ function initMap() {
     } else {
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
+ 
     }
   });
 }
