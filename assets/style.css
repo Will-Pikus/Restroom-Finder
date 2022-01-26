@@ -8,36 +8,45 @@ main{
 
 #input-container{
     background-color: rgb(230, 230, 230);
-    padding: 10px;
+    padding: 15px;
 }
 
 #map-container{
-    padding: 10px;
+    padding: 15px;
 }
 
 .header-style {
-    height: 150px;
+    height: 125px;
     width: auto;
     background: rgb(2,0,36);
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
     margin-bottom: 20px;
     color: white;
     text-align: left;
-    border-bottom: 10px solid grey;
+    border-bottom: 10px solid rgb(185, 185, 185);
 }
 
 .header-text{
-    font-weight: 700;
-    font-size: 65px;
+    /* font-weight: 700; */
+    font-size: 60px;
     margin-left: 20px;
     padding-top: 30px;
 }
 
 #container-h1{
-    border-bottom: 2px solid grey;
+    border-bottom: 2px solid rgb(204, 204, 204);
     font-weight: 500;
 }
 
 .center-allign{
     text-align: center;
+}
+
+.dd-style{
+    width: 50%;
+    text-align: center;
+}
+button{
+    background-color: rgb(0, 158, 231);
+    color: white;
 }
