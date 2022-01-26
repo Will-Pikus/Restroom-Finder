@@ -50,3 +50,8 @@ button{
     background-color: rgb(0, 158, 231);
     color: white;
 }
+
+#map {
+    height: 60vh;
+    width: 60vw;
+}

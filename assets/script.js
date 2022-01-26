@@ -11,3 +11,10 @@ submit.addEventListener('click', function() {
     console.log(where.value);
 });
 
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'),{
+        center: {lat: 66, lng: 66},
+        zoom: 8,
+        mapId: 'e5c1493f9a045ddd'
+    })
+}
