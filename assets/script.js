@@ -36,9 +36,15 @@ function initMap() {
           };
 
           infoWindow.setPosition(pos);
-          infoWindow.setContent("Location found.");
-          infoWindow.open(map);
           map.setCenter(pos);
+
+          const marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            icon: {                             
+              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+            animation: google.maps.Animation.DROP,
+          });
         },
         () => {
           handleLocationError(true, infoWindow, map.getCenter());
@@ -47,6 +53,7 @@ function initMap() {
     } else {
       // Browser doesn't support Geolocation
       handleLocationError(false, infoWindow, map.getCenter());
+ 
     }
   });
 }
