@@ -5,6 +5,7 @@ let gender = document.getElementById('gender-dropdown')
 let submit = document.getElementById('submitbtn')
 let submit2 = document.getElementById('submitbtn2')
 let resultsdiv = document.getElementById('result-container')
+let keyword = "(mcdonalds) | (burger%20king) | (starbucks) | (wal-mart)"
 let lat;
 let lng;
 
@@ -41,7 +42,7 @@ function initMap() {
           };
           lat = position.coords.latitude;
           lng = position.coords.longitude;
-          console.log(lat)
+          console.log(lat,lng)
           infoWindow.setPosition(pos);
           map.setCenter(pos);
 
@@ -78,21 +79,20 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 
-function query() {
+// function query() {
 
-  fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mcdonalds%20san%20diego&inputtype=textquery&fields=formatted_address&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
-  .then(response => response.json())
-  .then(data => {
-  console.log(data);
+//   fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mcdonalds%20san%20diego&inputtype=textquery&fields=formatted_address&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+//   .then(response => response.json())
+//   .then(data => {
+//   console.log(data);
    
-  })
-}
+//   })
+// }
 
 //This one searches for items matching the keyword around the same area.
 function query2() {
   let distancev = distance.value
-  console.log(distancev)
-  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+lat+'%2C'+lng+'&radius='+distancev+'&keyword=mcdonalds&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+lat+'%2C'+lng+'&radius='+distancev+'&keyword='+keyword+'&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
   .then(data => {
     console.log(data);
