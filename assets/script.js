@@ -3,6 +3,8 @@ let public = document.getElementById('public-dropdown')
 let where = document.getElementById('location')
 let gender = document.getElementById('gender-dropdown')
 let submit = document.getElementById('submitbtn')
+let submit2 = document.getElementById('submitbtn2')
+let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
 
@@ -85,22 +87,54 @@ function query() {
    
   })
 }
+
 //This one searches for items matching the keyword around the same area.
 function query2() {
-console.log(lat);
-  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+ lat+ '%2' + lng +'&radius=50000&keyword=starbucks&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  let distancev = distance.value
+  console.log(distancev)
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+lat+'%2C'+lng+'&radius='+distancev+'&keyword=mcdonalds&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
   .then(data => {
     console.log(data);
-    let results = data['results'][0].vicinity;
-    
-    console.log(data);
-    console.log(results);
-
+    let results = data['results'];
+  
+    console.log(results[0]);
+    place1 = [results[0].name, results[0].vicinity]
+    place2 = [results[1].name, results[1].vicinity]
+    place3 = [results[2].name, results[2].vicinity]
+    place4 = [results[3].name, results[3].vicinity]
+    place5 = [results[4].name, results[4].vicinity]
+    resultsdiv.innerHTML = 
+    `<div class=""><h5>Result 1</h5>
+    <p>`+place1[0]+ `</p>
+    <p>`+place1[1]+ `</p>
+   </div>
+   <div class=""><h5>Result 2</h5>
+    <p>`+place2[0]+ `</p>
+    <p>`+place2[1]+ `</p>
+   </div>
+   <div class=""><h5>Result 3</h5>
+    <p>`+place3[0]+ `</p>
+    <p>`+place3[1]+ `</p>
+   </div>
+   <div class=""><h5>Result 4</h5>
+    <p>`+place4[0]+ `</p>
+    <p>`+place4[1]+ `</p>
+   </div>
+   <div class=""><h5>Result 5</h5>
+    <p>`+place5[0]+ `</p>
+    <p>`+place5[1]+ `</p>
+   </div>`
   })
 }
+
+submit2.addEventListener('click', function() {
+  query2();
+})
+
+//https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+ lat+ '%2' + lng +'&radius=50000&keyword=mcdonalds&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM
 //This link will search for nearby places
-//https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.8976763%2C-77.0365298&radius=50000&keyword=mcdonalds&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM
+//
 //Places API takes text input. Our text input will always be the same. We just
 //function to use the Places API
 //add event listener to search. ask for location upon search.
