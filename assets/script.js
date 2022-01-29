@@ -177,18 +177,21 @@ function query2(test, test2) {
   .then(data => {
     console.log(data);
     let results = data.results
-    resultsdiv.innerHTML = ""
+
+    resultsdiv.innerHTML=""
+
     for(var i = 0; i < 5 ; i++){
      
-      let placename = results[i].name
-      let div = document.createElement('div');
-      let p = document.createElement('p');
+      let resultButton = document.createElement('button');
+      resultButton.classList.add('results-button')
+
+      let placename = results[i].name + " "
       let placeaddress = results[i].vicinity;
-      p.append(placename);
-      div.append(p);
-      resultsdiv.append(div);
-      p.append(placeaddress);
-      div.append(p)
+
+      resultButton.append(placename);
+      resultButton.append(placeaddress);
+
+      resultsdiv.append(resultButton)
     }
   })
 };
