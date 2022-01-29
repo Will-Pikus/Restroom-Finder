@@ -13,7 +13,8 @@ let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
 let map, infoWindow;
 
 const locationButton = document.createElement("button");
-//Map Function
+
+//INIT MAP FUCNTION
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: -34.397, lng: 150.644 },
@@ -27,6 +28,21 @@ function initMap() {
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
   getGeoLocation(map)
+}
+
+// HANDLE RESULT CLICK FUNCTION
+function handleResultClick(event) {
+  var btnClicked = $(event.target)
+  var buttonText = btnClicked[0].innerHTML
+
+  calcRoute(map,buttonText)
+
+  console.log(buttonText)
+}
+
+
+// CALCULATE ROUTE FUNCTION
+function calcRoute(map,buttonText) {
   //create a DirectionsService object to use the route method and get a result for our request
   var directionsService = new google.maps.DirectionsService();
 
@@ -35,16 +51,10 @@ function initMap() {
 
   //bind the DirectionsRenderer to the map
   directionsDisplay.setMap(map);
-  calcRoute(directionsService,directionsDisplay,map)
- 
-}
-
-// CALCULATE ROUTE FUNCTION
-function calcRoute(directionsService,directionsDisplay,map) {
   //create request
   var request = {
       origin: "Las Vegas, NV, USA",
-      destination: "New York, NY, USA",
+      destination: buttonText,
       travelMode: google.maps.TravelMode.DRIVING, //WALKING, BYCYCLING, TRANSIT
       unitSystem: google.maps.UnitSystem.IMPERIAL
   }
@@ -52,6 +62,7 @@ function calcRoute(directionsService,directionsDisplay,map) {
   //pass the request to the route method
   directionsService.route(request, function (result, status) {
       if (status == google.maps.DirectionsStatus.OK) {
+        //delete route from map
 
           //Get distance and time and display on DOM
           // const output = document.querySelector('#output');
@@ -188,8 +199,8 @@ function query2(test, test2) {
       let placename = i+1 +". "+ results[i].name + " "
       let placeaddress = results[i].vicinity;
 
-      resultButton.append(placename);
-      resultButton.append(placeaddress);
+      resultButton.textContent = placename + placeaddress;
+      // resultButton.append(placeaddress);
 
       resultsdiv.append(resultButton)
     }
@@ -201,6 +212,8 @@ submit.addEventListener('click', function() {
    getGeoLocation2();
 
 });
+
+resultsdiv.addEventListener('click', handleResultClick)
 
 //Dont want to delete this function just in case we end up wanting to do a multi-query thing or something.
 // function query() {
