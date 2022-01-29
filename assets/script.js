@@ -8,7 +8,7 @@ let lat;
 let lng;
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
-let keyword = "(mcdonalds) |& (starbucks) | (wal-mart)"
+let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
 
 let map, infoWindow;
 
