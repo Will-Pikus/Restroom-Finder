@@ -192,6 +192,15 @@ function query2(test, test2) {
       resultButton.append(placeaddress);
 
       resultsdiv.append(resultButton)
+
+      const marker = new google.maps.Marker({
+        position: results[i].geometry.location,
+        map: map,
+        icon: {                             
+          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+        animation: google.maps.Animation.DROP,
+      });
+
     }
   })
 };
