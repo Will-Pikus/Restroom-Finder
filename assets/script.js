@@ -134,7 +134,7 @@ function query2(test, test2) {
   .then(data => {
     console.log(data);
     let results = data.results
-
+    resultsdiv.innerHTML = ""
     for(var i = 0; i < 5 ; i++){
      
       let placename = results[i].name
