@@ -185,7 +185,7 @@ function query2(test, test2) {
       let resultButton = document.createElement('button');
       resultButton.classList.add('results-button')
 
-      let placename = results[i].name + " "
+      let placename = i+1 +". "+ results[i].name + " "
       let placeaddress = results[i].vicinity;
 
       resultButton.append(placename);

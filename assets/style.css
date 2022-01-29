@@ -24,7 +24,6 @@ main{
     color: white;
     text-align: left;
     border-bottom: 10px solid rgb(185, 185, 185);
-    display: flex;
 }
 
 .header-text{
