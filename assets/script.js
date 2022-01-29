@@ -3,22 +3,24 @@ let public = document.getElementById('public-dropdown')
 let where = document.getElementById('location')
 let gender = document.getElementById('gender-dropdown')
 let submit = document.getElementById('submitbtn')
+let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
+
 var myLatLng = {lat: 38.3460, lng: -0.4907}
 var dest = "New York, NY, USA"
 var start = "Las Vegas, NV, USA"
 
-submit.addEventListener('click', function() { 
-    console.log(distance.value);
-    console.log(public.value);
-    console.log(gender.value);
-    console.log(where.value);
-});
+let map, infoWindow;
+
+//This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
+let keyword = "(mcdonalds) |& (starbucks) | (wal-mart)"
 
 let map, infoWindow;
 
-// INITIATE MAP FUNCTION
+const locationButton = document.createElement("button");
+//Map Function
+
 function initMap() {
   var mapOptions = {
       center: myLatLng,
@@ -28,7 +30,7 @@ function initMap() {
   //create map
   var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-  var currentLoc = getCurrLoc(map)
+  var currentLoc = getGeoLocation(map)
   //create a DirectionsService object to use the route method and get a result for our request
   var directionsService = new google.maps.DirectionsService();
 
@@ -72,91 +74,138 @@ function calcRoute(directionsService,directionsDisplay,currentLoc, map) {
   });
 }
 
-function getCurrLoc(map){
-  infoWindow = new google.maps.InfoWindow();
-  
-  // const locationButton = document.createElement("button");
-  // locationButton.textContent = "Pan to Current Location";
-  // locationButton.classList.add("custom-map-control-button");
-  // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-  // locationButton.addEventListener("click", () => {
-
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-
-          infoWindow.setPosition(pos);
-          map.setCenter(pos);
-          // return pos
-
-          const marker = new google.maps.Marker({
-            position: pos,
-            map: map,
-            icon: {                             
-              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
-            animation: google.maps.Animation.DROP,
-          });
-          return pos
-        },
-        () => {
-          handleLocationError(true, infoWindow, map.getCenter());
-        }
-      );
-    } 
-    else {
-      // Browser doesn't support Geolocation
-      handleLocationError(false, infoWindow, map.getCenter());
-    }
-  // });
-
-  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(
-      browserHasGeolocation
-        ? "Error: The Geolocation service failed."
-        : "Error: Your browser doesn't support geolocation."
-    );
-    infoWindow.open(map);
-  }
-}
+function getGeoLocation(){
 
 
-initMap()
- 
+  // Try HTML5 geolocation.
 
-function query() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
 
-  fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mcdonalds%20san%20diego&inputtype=textquery&fields=formatted_address&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
-  .then(response => response.json())
-  .then(data => {
-  console.log(data);
+        
+         lat = position.coords.latitude;
+         lng = position.coords.longitude;
+
    
-  })
+        infoWindow.setPosition(pos);
+        map.setCenter(pos);
+
+        const marker = new google.maps.Marker({
+          position: pos,
+          map: map,
+          icon: {                             
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+          animation: google.maps.Animation.DROP,
+        });
+   
+        
+      },
+      () => {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+
+
+
+
 }
+//Same function as previous BUT it calls the query2function, so it populates the DOM with results.
+function getGeoLocation2(){
+
+
+  // Try HTML5 geolocation.
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+
+        
+         lat = position.coords.latitude;
+         lng = position.coords.longitude;
+
+         query2(lat,lng)
+    
+   
+        infoWindow.setPosition(pos);
+        map.setCenter(pos);
+
+        const marker = new google.maps.Marker({
+          position: pos,
+          map: map,
+          icon: {                             
+            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+          animation: google.maps.Animation.DROP,
+        });
+   
+        
+      },
+      () => {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+
+
+
+
+}
+locationButton.addEventListener("click", () => {
+getGeoLocation();
+});
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(
+    browserHasGeolocation
+      ? "Error: The Geolocation service failed."
+      : "Error: Your browser doesn't support geolocation."
+  );
+  infoWindow.open(map);
+}
+
 //This one searches for items matching the keyword around the same area.
-function query2() {
-console.log(lat);
-  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+ lat+ '%2' + lng +'&radius=50000&keyword=starbucks&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+function query2(test, test2) {
+  let distancev = distance.value
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword='+keyword+'&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
   .then(data => {
     console.log(data);
-    let results = data['results'][0].vicinity;
-    
-    console.log(data);
-    console.log(results);
+    let results = data.results
 
+    for(var i = 0; i < 5 ; i++){
+     
+      let placename = results[i].name
+      let div = document.createElement('div');
+      let p = document.createElement('p');
+      let placeaddress = results[i].vicinity;
+      p.append(placename);
+      div.append(p);
+      resultsdiv.append(div);
+      p.append(placeaddress);
+      div.append(p)
+    }
   })
-}
-//This link will search for nearby places
-//https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.8976763%2C-77.0365298&radius=50000&keyword=mcdonalds&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM
-//Places API takes text input. Our text input will always be the same. We just
-//function to use the Places API
-//add event listener to search. ask for location upon search.
-//pass location search as the argument for API call
-//Function to make divs populated with search results
-//just update the count of restroom users.
+};
+
+submit.addEventListener('click', function() {
+
+   getGeoLocation2();
+
+});
+
+//Dont want to delete this function just in case we end up wanting to do a multi-query thing or something.
+// function query() {
+
+//   fetch('https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=mcdonalds%20san%20diego&inputtype=textquery&fields=formatted_address&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+//   .then(response => response.json())
+//   .then(data => {
+//   console.log(data);
+   
+//   })
+// }
