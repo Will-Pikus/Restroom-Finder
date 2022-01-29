@@ -179,7 +179,7 @@ function query2(test, test2) {
     let results = data.results
 
     resultsdiv.innerHTML=""
-    
+
     for(var i = 0; i < 5 ; i++){
      
       let resultButton = document.createElement('button');
