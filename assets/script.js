@@ -8,7 +8,7 @@ let lat;
 let lng;
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
-let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
+let keyword = "mcdonalds"
 
 let map, infoWindow;
 
@@ -179,10 +179,13 @@ function query2(test, test2) {
   .then(response => response.json())
 
   ]).then(data => {
-    console.log(data);
-    let objarray = [data[0],data[1],data[2]];
-    let results = objarray[0]
-    console.log(objarray);
+    let data0 = data[0].results;
+    let data1 = data[1].results;
+    let data2 = data[2].results;
+
+    let results = data0.concat(data1,data2);
+    console.log(results);
+    results.sort
     resultsdiv.innerHTML=""
 
     for(var i = 0; i < 5 ; i++){
