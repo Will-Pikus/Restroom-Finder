@@ -6,6 +6,7 @@ let submit = document.getElementById('submitbtn')
 let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
+let globalInfoWindow;
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
 let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
@@ -23,9 +24,9 @@ function initMap() {
   infoWindow = new google.maps.InfoWindow();
 
 
-  locationButton.textContent = "Pan to Current Location";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+  // locationButton.textContent = "Pan to Current Location";
+  // locationButton.classList.add("custom-map-control-button");
+  // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
   getGeoLocation(map)
 }
@@ -164,9 +165,9 @@ function getGeoLocation2(){
 
 
 }
-locationButton.addEventListener("click", () => {
-getGeoLocation();
-});
+// locationButton.addEventListener("click", () => {
+// getGeoLocation();
+// });
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
@@ -205,7 +206,20 @@ function query2(test, test2) {
 
       resultsdiv.append(resultButton)
 
-      const markerPlaces = new google.maps.Marker({
+      let contentString = 
+        "<div class='marker-text-box'>" +
+        "<h5>"+
+        results[i].name+
+        "</h5>"+ 
+        "<h6>"+
+        results[i].vicinity+
+        "</h6>"+
+
+        "</div>";
+
+        console.log(contentString)
+
+      let markerPlaces = new google.maps.Marker({
         position: results[i].geometry.location,
         map: map,
         icon: {                             
@@ -213,6 +227,28 @@ function query2(test, test2) {
         animation: google.maps.Animation.DROP,
         title: results[i].name
       });
+
+      
+
+
+      markerPlaces.addListener("click", () => {
+        console.log('clicked', markerPlaces)
+        if (globalInfoWindow) {
+          globalInfoWindow.close();
+        }
+        globalInfoWindow = new google.maps.InfoWindow({
+          content: contentString,
+        })
+        globalInfoWindow.open({
+          anchor: markerPlaces,
+          map,
+          shouldFocus: false,
+        });
+      });
+      
+      
+      
+      console.log('markerPlaces', markerPlaces)
       
 
     }
