@@ -8,6 +8,8 @@ let lat;
 let lng;
 let globalInfoWindow;
 var myLatLng
+var modalBg = document.querySelector('.modal-bg')
+var modalclose = document.querySelector('.modal-close')
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
 let keyword = "mcdonalds"
@@ -264,11 +266,15 @@ function query2(test, test2) {
             
         }
     }else{
-      window.alert("There are no locations in your area within this radius.");
+      // window.alert("There are no locations in your area within this radius.");
+      modalBg.classList.add('bg-active');
     }
   })
 };
 
+modalclose.addEventListener('click', function() {
+  modalBg.classList.remove('bg-active')
+});
 
 
 
