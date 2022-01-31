@@ -222,8 +222,7 @@ function query2(test, test2) {
       let markerPlaces = new google.maps.Marker({
         position: results[i].geometry.location,
         map: map,
-        icon: {                             
-          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+        icon: './assets/images/toileticon56x.png',
         animation: google.maps.Animation.DROP,
         title: results[i].name
       });
