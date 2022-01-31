@@ -9,7 +9,7 @@ let lng;
 var myLatLng
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
-let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
+let keyword = "mcdonalds"
 
 let map, infoWindow;
 
@@ -176,53 +176,64 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 
-
-
 //This one searches for items matching the keyword around the same area.
 function query2(test, test2) {
   let distancev = distance.value
+  Promise.all([
   fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword='+keyword+'&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=starbucks&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=wendys&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    let results = data.results
+
+  ]).then(data => {
+    let data0 = data[0].results;
+    let data1 = data[1].results;
+    let data2 = data[2].results;
+
+    let results = data0.concat(data1,data2);
+    console.log(results);
+    results.sort
+    resultsdiv.innerHTML=""
 
     if(results.length > 0){
-      resultsdiv.innerHTML=""
+        resultsdiv.innerHTML=""
+  
+        let topResultsText = document.createElement('h1')
+        topResultsText.classList.add('container-h1', 'padding-top')
+        topResultsText.textContent = "Top Results: "
+        resultsdiv.append(topResultsText)
 
-      let topResultsText = document.createElement('h1')
-      topResultsText.classList.add('container-h1', 'padding-top')
-      topResultsText.textContent = "Top Results: "
-      resultsdiv.append(topResultsText)
+        for(var i = 0; i < 5 ; i++){
+        
+            let resultButton = document.createElement('button');
+            resultButton.classList.add('results-button')
 
+            let placename = i+1 +". "+ results[i].name + " "
+            let placeaddress = results[i].vicinity;
 
-      for(var i = 0; i < 5 ; i++){
-      
-        let resultButton = document.createElement('button');
-        resultButton.classList.add('results-button')
+            resultButton.textContent = placename + placeaddress;
+            // resultButton.append(placeaddress);
 
-        let placename = i+1 +". "+ results[i].name + " "
-        let placeaddress = results[i].vicinity;
+            resultsdiv.append(resultButton)
 
-        resultButton.textContent = placename + placeaddress;
-        // resultButton.append(placeaddress);
-
-        resultsdiv.append(resultButton)
-
-        const marker = new google.maps.Marker({
-          position: results[i].geometry.location,
-          map: map,
-          icon: {                             
-            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
-          animation: google.maps.Animation.DROP,
-        });
-
-      }
+            const marker = new google.maps.Marker({
+                position: results[i].geometry.location,
+                map: map,
+                icon: {                             
+                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+                animation: google.maps.Animation.DROP,
+            });
+        }
     }else{
       window.alert("There are no locations in your area within this radius.");
     }
   })
 };
+
+
+
 
 submit.addEventListener('click', function() {
 
