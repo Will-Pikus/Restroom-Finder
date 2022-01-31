@@ -10,6 +10,7 @@ let globalInfoWindow;
 var myLatLng
 var modalBg = document.querySelector('.modal-bg')
 var modalclose = document.querySelector('.modal-close')
+var lastsearch = document.querySelector('#last-search')
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
 let keyword = "mcdonalds"
@@ -18,6 +19,8 @@ let map, infoWindow;
 
 const locationButton = document.createElement("button");
 
+//Populates last searched
+lastsearch.innerHTML = localStorage.getItem('lastviewed') + "...";
 //INIT MAP FUCNTION
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -33,16 +36,30 @@ function initMap() {
 
   getGeoLocation(map)
 }
+//HANDLE LAST SEARCH CLICK FUNCTION
+function handleLastSearchButton(event) {
+  var btnClicked = $(event.target)
+  var buttonText = btnClicked[0].innerHTML
+  var lastaddress = buttonText
+
+  calcRoute(map,lastaddress)
+
+
+}
 
 // HANDLE RESULT CLICK FUNCTION
 function handleResultClick(event) {
   var btnClicked = $(event.target)
   var buttonText = btnClicked[0].innerHTML
+  var trimmedtext = buttonText.substring(3);
+
+  localStorage.setItem('lastviewed', trimmedtext)
 
   
   calcRoute(map,buttonText)
 
-  console.log(buttonText)
+  lastsearch.innerHTML = localStorage.getItem('lastviewed');
+
 }
 
 
@@ -291,6 +308,7 @@ locationButton.addEventListener("click", () => {
 locationButton.addEventListener("click", getGeoLocation)
 
 resultsdiv.addEventListener('click', handleResultClick)
+lastsearch.addEventListener('click', handleLastSearchButton)
 
 //Dont want to delete this function just in case we end up wanting to do a multi-query thing or something.
 // function query() {

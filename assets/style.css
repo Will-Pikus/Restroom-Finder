@@ -127,3 +127,7 @@ button{
     font-weight: bold;
     cursor: pointer;
 }
+#last-search {
+    overflow: clip;
+    white-space:pre-wrap;
+}
