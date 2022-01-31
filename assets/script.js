@@ -7,9 +7,10 @@ let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
 let globalInfoWindow;
+var myLatLng
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
-let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
+let keyword = "mcdonalds"
 
 let map, infoWindow;
 
@@ -36,6 +37,7 @@ function handleResultClick(event) {
   var btnClicked = $(event.target)
   var buttonText = btnClicked[0].innerHTML
 
+  
   calcRoute(map,buttonText)
 
   console.log(buttonText)
@@ -54,7 +56,7 @@ function calcRoute(map,buttonText) {
   directionsDisplay.setMap(map);
   //create request
   var request = {
-      origin: "Las Vegas, NV, USA",
+      origin: myLatLng,
       destination: buttonText,
       travelMode: google.maps.TravelMode.DRIVING, //WALKING, BYCYCLING, TRANSIT
       unitSystem: google.maps.UnitSystem.IMPERIAL
@@ -99,7 +101,11 @@ function getGeoLocation(map){
          lat = position.coords.latitude;
          lng = position.coords.longitude;
 
-   
+         myLatLng = {
+          lat: lat,
+          lng: lng
+        };
+
         infoWindow.setPosition(pos);
         map.setCenter(pos);
 
@@ -110,8 +116,6 @@ function getGeoLocation(map){
             url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
           animation: google.maps.Animation.DROP,
         });
-   
-        
       },
       () => {
         handleLocationError(true, infoWindow, map.getCenter());
@@ -146,13 +150,13 @@ function getGeoLocation2(){
         map.setCenter(pos);
         map.setZoom(10);
 
-        const marker = new google.maps.Marker({
-          position: pos,
-          map: map,
-          icon: {                             
-            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
-          animation: google.maps.Animation.DROP,
-        });
+        // const marker = new google.maps.Marker({
+        //   position: pos,
+        //   map: map,
+        //   icon: {                             
+        //     url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+        //   animation: google.maps.Animation.DROP,
+        // });
    
         
       },
@@ -160,14 +164,11 @@ function getGeoLocation2(){
         handleLocationError(true, infoWindow, map.getCenter());
       }
     );
-
-
-
-
 }
 // locationButton.addEventListener("click", () => {
 // getGeoLocation();
 // });
+
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
@@ -180,85 +181,108 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 
-
-
 //This one searches for items matching the keyword around the same area.
 function query2(test, test2) {
   let distancev = distance.value
+  Promise.all([
   fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword='+keyword+'&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=starbucks&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=wendys&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    let results = data.results
 
+  ]).then(data => {
+    let data0 = data[0].results;
+    let data1 = data[1].results;
+    let data2 = data[2].results;
+
+    let results = data0.concat(data1,data2);
+    console.log(results);
+    results.sort
     resultsdiv.innerHTML=""
-
-    for(var i = 0; i < 5 ; i++){
-     
-      let resultButton = document.createElement('button');
-      resultButton.classList.add('results-button')
-
-      let placename = i+1 +". "+ results[i].name + " "
-      let placeaddress = results[i].vicinity;
-
-      resultButton.textContent = placename + placeaddress;
-      // resultButton.append(placeaddress);
-
-      resultsdiv.append(resultButton)
-
-      let contentString = 
-        "<div class='marker-text-box'>" +
-        "<h5>"+
-        results[i].name+
-        "</h5>"+ 
-        "<h6>"+
-        results[i].vicinity+
-        "</h6>"+
-
-        "</div>";
-
-        console.log(contentString)
-
-      let markerPlaces = new google.maps.Marker({
-        position: results[i].geometry.location,
-        map: map,
-        icon: './assets/images/toileticon56x.png',
-        animation: google.maps.Animation.DROP,
-        title: results[i].name
-      });
-
       
+    if(results.length > 0){
+        resultsdiv.innerHTML=""
+  
+        let topResultsText = document.createElement('h1')
+        topResultsText.classList.add('container-h1', 'padding-top')
+        topResultsText.textContent = "Top Results: "
+        resultsdiv.append(topResultsText)
+
+        for(var i = 0; i < 5 ; i++){
+        
+            let resultButton = document.createElement('button');
+            resultButton.classList.add('results-button')
+
+            let placename = i+1 +". "+ results[i].name + " "
+            let placeaddress = results[i].vicinity;
+
+            resultButton.textContent = placename + placeaddress;
+            // resultButton.append(placeaddress);
+
+            resultsdiv.append(resultButton)
+          // creates the locations Markers
+            const markerPlaces = new google.maps.Marker({
+                position: results[i].geometry.location,
+                map: map,                            
+                icon: './assets/images/toileticon56x.png',
+                animation: google.maps.Animation.DROP,
+
+            });
+            // 
+            markerPlaces.addListener("click", () => {
+              console.log('clicked', markerPlaces)
+              if (globalInfoWindow) {
+                globalInfoWindow.close();
+              }
+              globalInfoWindow = new google.maps.InfoWindow({
+                content: contentString,
+              })
+              globalInfoWindow.open({
+                anchor: markerPlaces,
+                map,
+                shouldFocus: false,
+                
+              });
+            });
+            console.log('markerPlaces', markerPlaces)
+            let contentString = 
+               "<div class='marker-text-box'>" +
+               "<h5>"+
+                 results[i].name+
+               "</h5>"+ 
+               "<h6>"+
+               results[i].vicinity+
+               "</h6>"+
+
+               "</div>";
+
+        
 
 
-      markerPlaces.addListener("click", () => {
-        console.log('clicked', markerPlaces)
-        if (globalInfoWindow) {
-          globalInfoWindow.close();
+            
         }
-        globalInfoWindow = new google.maps.InfoWindow({
-          content: contentString,
-        })
-        globalInfoWindow.open({
-          anchor: markerPlaces,
-          map,
-          shouldFocus: false,
-        });
-      });
-      
-      
-      
-      console.log('markerPlaces', markerPlaces)
-      
-
+    }else{
+      window.alert("There are no locations in your area within this radius.");
     }
   })
 };
+
+
+
 
 submit.addEventListener('click', function() {
 
    getGeoLocation2();
 
 });
+
+locationButton.addEventListener("click", () => {
+  getGeoLocation();
+});
+
+locationButton.addEventListener("click", getGeoLocation)
 
 resultsdiv.addEventListener('click', handleResultClick)
 
