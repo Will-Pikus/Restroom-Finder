@@ -233,7 +233,8 @@ submit.addEventListener('click', function() {
 locationButton.addEventListener("click", () => {
   getGeoLocation();
 });
-  
+
+locationButton.addEventListener("click", getGeoLocation)
 
 resultsdiv.addEventListener('click', handleResultClick)
 
