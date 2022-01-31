@@ -6,6 +6,7 @@ let submit = document.getElementById('submitbtn')
 let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
+let globalInfoWindow;
 var myLatLng
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
@@ -24,9 +25,9 @@ function initMap() {
   infoWindow = new google.maps.InfoWindow();
 
 
-  locationButton.textContent = "Pan to Current Location";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+  // locationButton.textContent = "Pan to Current Location";
+  // locationButton.classList.add("custom-map-control-button");
+  // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
   getGeoLocation(map)
 }
@@ -147,6 +148,7 @@ function getGeoLocation2(){
    
         infoWindow.setPosition(pos);
         map.setCenter(pos);
+        map.setZoom(10);
 
         // const marker = new google.maps.Marker({
         //   position: pos,
@@ -163,6 +165,9 @@ function getGeoLocation2(){
       }
     );
 }
+// locationButton.addEventListener("click", () => {
+// getGeoLocation();
+// });
 
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -196,7 +201,7 @@ function query2(test, test2) {
     console.log(results);
     results.sort
     resultsdiv.innerHTML=""
-
+      
     if(results.length > 0){
         resultsdiv.innerHTML=""
   
@@ -217,14 +222,46 @@ function query2(test, test2) {
             // resultButton.append(placeaddress);
 
             resultsdiv.append(resultButton)
-
-            const marker = new google.maps.Marker({
+          // creates the locations Markers
+            const markerPlaces = new google.maps.Marker({
                 position: results[i].geometry.location,
-                map: map,
-                icon: {                             
-                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+                map: map,                            
+                icon: './assets/images/toileticon56x.png',
                 animation: google.maps.Animation.DROP,
+
             });
+            // 
+            markerPlaces.addListener("click", () => {
+              console.log('clicked', markerPlaces)
+              if (globalInfoWindow) {
+                globalInfoWindow.close();
+              }
+              globalInfoWindow = new google.maps.InfoWindow({
+                content: contentString,
+              })
+              globalInfoWindow.open({
+                anchor: markerPlaces,
+                map,
+                shouldFocus: false,
+                
+              });
+            });
+            console.log('markerPlaces', markerPlaces)
+            let contentString = 
+               "<div class='marker-text-box'>" +
+               "<h5>"+
+                 results[i].name+
+               "</h5>"+ 
+               "<h6>"+
+               results[i].vicinity+
+               "</h6>"+
+
+               "</div>";
+
+        
+
+
+            
         }
     }else{
       window.alert("There are no locations in your area within this radius.");
