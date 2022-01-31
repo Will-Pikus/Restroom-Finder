@@ -6,6 +6,7 @@ let submit = document.getElementById('submitbtn')
 let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
+var myLatLng
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
 let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
@@ -35,6 +36,7 @@ function handleResultClick(event) {
   var btnClicked = $(event.target)
   var buttonText = btnClicked[0].innerHTML
 
+  
   calcRoute(map,buttonText)
 
   console.log(buttonText)
@@ -53,7 +55,7 @@ function calcRoute(map,buttonText) {
   directionsDisplay.setMap(map);
   //create request
   var request = {
-      origin: "Las Vegas, NV, USA",
+      origin: myLatLng,
       destination: buttonText,
       travelMode: google.maps.TravelMode.DRIVING, //WALKING, BYCYCLING, TRANSIT
       unitSystem: google.maps.UnitSystem.IMPERIAL
@@ -98,7 +100,11 @@ function getGeoLocation(map){
          lat = position.coords.latitude;
          lng = position.coords.longitude;
 
-   
+         myLatLng = {
+          lat: lat,
+          lng: lng
+        };
+
         infoWindow.setPosition(pos);
         map.setCenter(pos);
 
@@ -109,8 +115,6 @@ function getGeoLocation(map){
             url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
           animation: google.maps.Animation.DROP,
         });
-   
-        
       },
       () => {
         handleLocationError(true, infoWindow, map.getCenter());
@@ -144,13 +148,13 @@ function getGeoLocation2(){
         infoWindow.setPosition(pos);
         map.setCenter(pos);
 
-        const marker = new google.maps.Marker({
-          position: pos,
-          map: map,
-          icon: {                             
-            url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
-          animation: google.maps.Animation.DROP,
-        });
+        // const marker = new google.maps.Marker({
+        //   position: pos,
+        //   map: map,
+        //   icon: {                             
+        //     url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"},
+        //   animation: google.maps.Animation.DROP,
+        // });
    
         
       },
@@ -158,14 +162,8 @@ function getGeoLocation2(){
         handleLocationError(true, infoWindow, map.getCenter());
       }
     );
-
-
-
-
 }
-locationButton.addEventListener("click", () => {
-getGeoLocation();
-});
+
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
@@ -189,29 +187,39 @@ function query2(test, test2) {
     console.log(data);
     let results = data.results
 
-    resultsdiv.innerHTML=""
+    if(results.length > 0){
+      resultsdiv.innerHTML=""
 
-    for(var i = 0; i < 5 ; i++){
-     
-      let resultButton = document.createElement('button');
-      resultButton.classList.add('results-button')
+      let topResultsText = document.createElement('h1')
+      topResultsText.classList.add('container-h1', 'padding-top')
+      topResultsText.textContent = "Top Results: "
+      resultsdiv.append(topResultsText)
 
-      let placename = i+1 +". "+ results[i].name + " "
-      let placeaddress = results[i].vicinity;
 
-      resultButton.textContent = placename + placeaddress;
-      // resultButton.append(placeaddress);
+      for(var i = 0; i < 5 ; i++){
+      
+        let resultButton = document.createElement('button');
+        resultButton.classList.add('results-button')
 
-      resultsdiv.append(resultButton)
+        let placename = i+1 +". "+ results[i].name + " "
+        let placeaddress = results[i].vicinity;
 
-      const marker = new google.maps.Marker({
-        position: results[i].geometry.location,
-        map: map,
-        icon: {                             
-          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
-        animation: google.maps.Animation.DROP,
-      });
+        resultButton.textContent = placename + placeaddress;
+        // resultButton.append(placeaddress);
 
+        resultsdiv.append(resultButton)
+
+        const marker = new google.maps.Marker({
+          position: results[i].geometry.location,
+          map: map,
+          icon: {                             
+            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+          animation: google.maps.Animation.DROP,
+        });
+
+      }
+    }else{
+      window.alert("There are no locations in your area within this radius.");
     }
   })
 };
@@ -221,6 +229,11 @@ submit.addEventListener('click', function() {
    getGeoLocation2();
 
 });
+
+locationButton.addEventListener("click", () => {
+  getGeoLocation();
+});
+  
 
 resultsdiv.addEventListener('click', handleResultClick)
 

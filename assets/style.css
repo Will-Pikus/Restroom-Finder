@@ -33,9 +33,10 @@ main{
     padding-top: 30px;
 }
 
-#container-h1{
+.container-h1{
     border-bottom: 2px solid rgb(204, 204, 204);
     font-weight: 500;
+    font-size: 36px;
 }
 
 .center-allign{
@@ -61,10 +62,22 @@ button{
     margin: 10px;
     height: 50px;
     font-size: 15px;
+    /* background-color: rgb(85, 85, 85); */
+    border-radius: 25px 25px 25px 25px;
 }
 
 #result-container{
-    text-align: center;
+    text-align: left;
     /* background-color: rgb(230, 230, 230);
     padding: 20px; */
+}
+
+.padding-top{
+    padding-top: 10px;
+}
+
+#route-container{
+    background-color: red;
+    width: 100px;
+    height: 200px;
 }
