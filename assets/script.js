@@ -8,7 +8,7 @@ let lat;
 let lng;
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
-let keyword = "(mcdonalds) | (starbucks) | (wal-mart)"
+let keyword = "mcdonalds"
 
 let map, infoWindow;
 
@@ -178,17 +178,25 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 
-
-
 //This one searches for items matching the keyword around the same area.
 function query2(test, test2) {
   let distancev = distance.value
+  Promise.all([
   fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword='+keyword+'&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=starbucks&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
+  .then(response => response.json()),
+  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='+test+'%2C'+test2+'&radius='+distancev+'&keyword=wendys&key=AIzaSyCItHTXTMZs3fcjRKsg7UcaNeWLUdTIdDM')
   .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    let results = data.results
 
+  ]).then(data => {
+    let data0 = data[0].results;
+    let data1 = data[1].results;
+    let data2 = data[2].results;
+
+    let results = data0.concat(data1,data2);
+    console.log(results);
+    results.sort
     resultsdiv.innerHTML=""
 
     for(var i = 0; i < 5 ; i++){
@@ -203,18 +211,20 @@ function query2(test, test2) {
       // resultButton.append(placeaddress);
 
       resultsdiv.append(resultButton)
-
-      const marker = new google.maps.Marker({
-        position: results[i].geometry.location,
-        map: map,
-        icon: {                             
-          url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
-        animation: google.maps.Animation.DROP,
-      });
-
     }
   })
 };
+
+const marker = new google.maps.Marker({
+  position: results[i].geometry.location,
+  map: map,
+  icon: {                             
+    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+  animation: google.maps.Animation.DROP,
+});
+
+
+
 
 submit.addEventListener('click', function() {
 
