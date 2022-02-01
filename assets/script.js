@@ -6,7 +6,11 @@ let submit = document.getElementById('submitbtn')
 let resultsdiv = document.getElementById('result-container')
 let lat;
 let lng;
+let globalInfoWindow;
 var myLatLng
+var modalBg = document.querySelector('.modal-bg')
+var modalclose = document.querySelector('.modal-close')
+var lastsearch = document.querySelector('#last-search')
 
 //This is our input query. Need to pass it an "And/Or" instead of just the OR it currently has. Havent figured out the exact syntax, worked once, but i forget how.
 let keyword = "mcdonalds"
@@ -15,6 +19,8 @@ let map, infoWindow;
 
 const locationButton = document.createElement("button");
 
+//Populates last searched
+lastsearch.innerHTML = localStorage.getItem('lastviewed') + "...";
 //INIT MAP FUCNTION
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -24,22 +30,36 @@ function initMap() {
   infoWindow = new google.maps.InfoWindow();
 
 
-  locationButton.textContent = "Pan to Current Location";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+  // locationButton.textContent = "Pan to Current Location";
+  // locationButton.classList.add("custom-map-control-button");
+  // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
   getGeoLocation(map)
+}
+//HANDLE LAST SEARCH CLICK FUNCTION
+function handleLastSearchButton(event) {
+  var btnClicked = $(event.target)
+  var buttonText = btnClicked[0].innerHTML
+  var lastaddress = buttonText
+
+  calcRoute(map,lastaddress)
+
+
 }
 
 // HANDLE RESULT CLICK FUNCTION
 function handleResultClick(event) {
   var btnClicked = $(event.target)
   var buttonText = btnClicked[0].innerHTML
+  var trimmedtext = buttonText.substring(3);
+
+  localStorage.setItem('lastviewed', trimmedtext)
 
   
   calcRoute(map,buttonText)
 
-  console.log(buttonText)
+  lastsearch.innerHTML = localStorage.getItem('lastviewed');
+
 }
 
 
@@ -174,6 +194,7 @@ function getGeoLocation2(){
    
         infoWindow.setPosition(pos);
         map.setCenter(pos);
+        map.setZoom(10);
 
         // const marker = new google.maps.Marker({
         //   position: pos,
@@ -190,6 +211,9 @@ function getGeoLocation2(){
       }
     );
 }
+// locationButton.addEventListener("click", () => {
+// getGeoLocation();
+// });
 
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -223,7 +247,7 @@ function query2(test, test2) {
     console.log(results);
     results.sort
     resultsdiv.innerHTML=""
-
+      
     if(results.length > 0){
         resultsdiv.innerHTML=""
   
@@ -244,21 +268,57 @@ function query2(test, test2) {
             // resultButton.append(placeaddress);
 
             resultsdiv.append(resultButton)
-
-            const marker = new google.maps.Marker({
+          // creates the locations Markers
+            const markerPlaces = new google.maps.Marker({
                 position: results[i].geometry.location,
-                map: map,
-                icon: {                             
-                url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"},
+                map: map,                            
+                icon: './assets/images/toileticon56x.png',
                 animation: google.maps.Animation.DROP,
+
             });
+            // 
+            markerPlaces.addListener("click", () => {
+              console.log('clicked', markerPlaces)
+              if (globalInfoWindow) {
+                globalInfoWindow.close();
+              }
+              globalInfoWindow = new google.maps.InfoWindow({
+                content: contentString,
+              })
+              globalInfoWindow.open({
+                anchor: markerPlaces,
+                map,
+                shouldFocus: false,
+                
+              });
+            });
+            console.log('markerPlaces', markerPlaces)
+            let contentString = 
+               "<div class='marker-text-box'>" +
+               "<h5>"+
+                 results[i].name+
+               "</h5>"+ 
+               "<h6>"+
+               results[i].vicinity+
+               "</h6>"+
+
+               "</div>";
+
+        
+
+
+            
         }
     }else{
-      window.alert("There are no locations in your area within this radius.");
+      // window.alert("There are no locations in your area within this radius.");
+      modalBg.classList.add('bg-active');
     }
   })
 };
 
+modalclose.addEventListener('click', function() {
+  modalBg.classList.remove('bg-active')
+});
 
 
 
@@ -274,6 +334,7 @@ locationButton.addEventListener("click", () => {
 locationButton.addEventListener("click", getGeoLocation)
 
 resultsdiv.addEventListener('click', handleResultClick)
+lastsearch.addEventListener('click', handleLastSearchButton)
 
 //Dont want to delete this function just in case we end up wanting to do a multi-query thing or something.
 // function query() {
