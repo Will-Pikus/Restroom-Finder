@@ -122,11 +122,8 @@ function calcRoute(map,buttonText) {
       } else {
           //delete route from map
           directionsDisplay.setDirections({ routes: [] });
-          //center map in London
+          
           map.setCenter(myLatLng);
-
-          //show error message
-          // output.innerHTML = "<div class='alert-danger'><i class='fas fa-exclamation-triangle'></i> Could not retrieve driving distance.</div>";
       }
   });
 }
