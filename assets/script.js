@@ -191,7 +191,7 @@ function getGeoLocation2(){
    
         infoWindow.setPosition(pos);
         map.setCenter(pos);
-        map.setZoom(10);
+        map.setZoom(13);
 
         // const marker = new google.maps.Marker({
         //   position: pos,
@@ -321,6 +321,7 @@ modalclose.addEventListener('click', function() {
 
 submit.addEventListener('click', function() {
    getGeoLocation2();
+   initMap();
 
 });
 
