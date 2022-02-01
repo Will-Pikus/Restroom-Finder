@@ -8,6 +8,6 @@ Website is used to find restrooms near your location. Select how far you are wil
 Gender neutral option and additional inputs for users to select a better experience. Reviews for users to input and populate upon selection(Firebase DB). Expand locations, giving users more options.
 
 ### Screenshot
-
+![Webpage Screenshot](/assets/images/restroom-finder.JPG)
 ### Site Link
 https://will-pikus.github.io/Restroom-Finder/
