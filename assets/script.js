@@ -64,11 +64,38 @@ function calcRoute(map,buttonText) {
   //pass the request to the route method
   directionsService.route(request, function (result, status) {
       if (status == google.maps.DirectionsStatus.OK) {
-        //delete route from map
 
+        document.querySelector('#route-output').innerHTML = ""
           //Get distance and time and display on DOM
-          // const output = document.querySelector('#output');
-          // output.innerHTML = "<div class='alert-info'>From: " + document.getElementById("from").value + ".<br />To: " + document.getElementById("to").value + ".<br /> Driving distance <i class='fas fa-road'></i> : " + result.routes[0].legs[0].distance.text + ".<br />Duration <i class='fas fa-hourglass-start'></i> : " + result.routes[0].legs[0].duration.text + ".</div>";
+          const output = document.querySelector('#route-output');
+          output.className = 'route-container'
+
+          var routeInfo = document.createElement('h1')
+          routeInfo.textContent="Route Info"
+          routeInfo.classList.add('container-h1')
+          output.append(routeInfo)
+
+          var fromText = document.createElement('p')
+          fromText.textContent="From: Your Location"
+          fromText.classList.add('p-norm')
+          output.append(fromText)
+
+          var toText = document.createElement('p')
+          toText.textContent="To: " + buttonText
+          toText.classList.add('p-norm')
+          output.append(toText)
+
+          var distText = document.createElement('p')
+          distText.textContent="Driving Distance: " + result.routes[0].legs[0].distance.text
+          distText.classList.add('p-norm')
+          output.append(distText)
+
+          var durationText = document.createElement('p')
+          durationText.textContent="Duration: " + result.routes[0].legs[0].duration.text
+          durationText.classList.add('p-norm')
+          output.append(durationText)
+
+          // output.innerHTML = "<div class='container-h1'>Route Info<div class='p-bold'>From: <div class='p-norm'>Your Location.<br /><div class='p-bold'>To:<div class='p-norm'> " + buttonText + ".<br /> <div class='p-bold'>Driving distance: <div class='p-norm'>" + result.routes[0].legs[0].distance.text + ".<br /><div class='p-bold'>Duration :<div class='p-norm'> " + result.routes[0].legs[0].duration.text + ".</div>";
 
           //display route
           directionsDisplay.setDirections(result);
@@ -236,7 +263,6 @@ function query2(test, test2) {
 
 
 submit.addEventListener('click', function() {
-
    getGeoLocation2();
 
 });
